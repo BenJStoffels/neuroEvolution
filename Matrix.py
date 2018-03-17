@@ -85,6 +85,12 @@ class Matrix:
             for j, number in enumerate(col):
                 self.matrix[i][j] = func(number)
 
+    def mutate(self, mr, change):
+        for i, col in enumerate(self.matrix):
+            for j, number in enumerate(col):
+                if random.random() < mr:
+                    self.matrix[i][j] += (random.random() / (2 * change)) - (1 / change)
+
     def copy(self):
         result = Matrix(self.rows, self.cols)
         for i, col in enumerate(self.matrix):

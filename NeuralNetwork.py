@@ -115,37 +115,22 @@ class NeuralNetwork:
     def copy(self):
         return NeuralNetwork(self)
 
+    def mutate(self, mr, change):
+        for i in range(self.layers):
+            self.weights_arr[i].mutate(mr, change)
+            self.bias_arr[i].mutate(mr, change)
 
-if __name__ == '__main__':
-    nn = NeuralNetwork([3, 4, 1])
-    nn1 = nn.copy()
-    trainingData = [
-        {
-            "inputs": [0, 0, 0],
-            "outputs": [0]
-        }, {
-            "inputs": [0, 1, 0],
-            "outputs": [1]
-        }, {
-            "inputs": [1, 0, 0],
-            "outputs": [0]
-        }, {
-            "inputs": [0, 0, 1],
-            "outputs": [1]
-        }, {
-            "inputs": [0, 1, 1],
-            "outputs": [1]
-        }, {
-            "inputs": [1, 0, 1],
-            "outputs": [1]
-        }, {
-            "inputs": [1, 1, 0],
-            "outputs": [1]
-        }
-    ]
+    def __str__(self):
+        string = ""
+        string += "Neural Network with {} layers, containing {} nodes".format(self.layers + 1, self.nodes_arr)
+        string += "\n"
+        string += "weights: \n"
+        for m in self.weights_arr:
+            string += str(m)
+            string += "\n"
+        string += "bias: \n"
+        for b in self.bias_arr:
+            string += str(b)
+            string += "\n"
 
-    for i in range(50000):
-        nn1.train_epoch(trainingData)
-        if(i % 10000 == 0):
-            print("how the network does at this moment:")
-            print(nn1.feedforward([1, 1, 1]))
+        return string
