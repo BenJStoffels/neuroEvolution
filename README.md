@@ -1,4 +1,6 @@
 # neuroEvolution
 I'm learning about neuroEvolution
 
-i created my own NeuralNetwork class
+I created my own NeuralNetwork, Matrix and Vector class
+
+I have created the game and next time I add a population
