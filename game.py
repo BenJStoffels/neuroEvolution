@@ -20,7 +20,7 @@ class SnakeGame:
         self.width = self.rows * self.speed
         self.height = self.rows * self.speed
         self.pos = Vector(self.speed * self.cols / 2, self.speed * self.rows / 2)
-        self.food = Vector(random.randrange(0, self.width, self.speed), random.randrange(0, self.height, self.speed))
+        self.food = Vector(500, random.randrange(0, self.height, self.speed))
         self.window = False
 
         if window:
@@ -92,15 +92,82 @@ class SnakeGame:
                 break
         return hitting
 
+    def calculateVision(self):
+        vision = []
+        tempValues = self.lookInDirection(Vector(-self.speed, 0))
+        for num in tempValues:
+            vision.append(num)
+        tempValues = self.lookInDirection(Vector(-self.speed, -self.speed))
+        for num in tempValues:
+            vision.append(num)
+        tempValues = self.lookInDirection(Vector(0, -self.speed))
+        for num in tempValues:
+            vision.append(num)
+        tempValues = self.lookInDirection(Vector(self.speed, -self.speed))
+        for num in tempValues:
+            vision.append(num)
+        tempValues = self.lookInDirection(Vector(self.speed, 0))
+        for num in tempValues:
+            vision.append(num)
+        tempValues = self.lookInDirection(Vector(self.speed, self.speed))
+        for num in tempValues:
+            vision.append(num)
+        tempValues = self.lookInDirection(Vector(0, self.speed))
+        for num in tempValues:
+            vision.append(num)
+        tempValues = self.lookInDirection(Vector(-self.speed, self.speed))
+        for num in tempValues:
+            vision.append(num)
+        return vision
+
+    def lookInDirection(self, vector):
+        visionInDirection = [0, 0, 0]
+
+        position = self.pos.copy()
+
+        foodIsFound = False
+        tailIsFound = False
+
+        distance = 0
+
+        position += vector
+        distance += 1
+
+        while position.x > 0 and position.y > 0 and position.x <= self.width and position.y <= self.height:
+            if not foodIsFound and position == self.food:
+                visionInDirection[0] = 1
+                foodIsFound = True
+            if not tailIsFound:
+                for v in self.history:
+                    if position == v:
+                        tailIsFound = True
+                        visionInDirection[1] = 1 / distance
+
+            position += vector
+            distance += 1
+
+        visionInDirection[2] = 1 / distance
+
+        return visionInDirection
+
+    def guess(self, vision):
+        output_matrix = self.brain.feedforward(vision)
+        outputs = output_matrix.toArray()
+        guessIndex = outputs.index(max(outputs))
+        return ["Up", "Down", "Left", "Right"][guessIndex]
+
     def update(self):
         self.updateHistory()
-        vision = calculateVision()
-        choice = self.guess()
+        vision = self.calculateVision()
+        choice = self.guess(vision)
+        print(vision)
+        print(choice)
         if choice != None:
             self.move(choice)
         else:
             self.move(self.lastMove)
         if self.hitsWal() or self.hitsSnake():
+            print("died ", self.length, " ", self.pos)
             self.isDead = True
         if self.eats():
             self.length += 1
@@ -129,10 +196,11 @@ class SnakeGame:
             pygame.draw.rect(self.display_screen, (255, 255, 255), [v.x, v.y, self.speed, self.speed])
         pygame.draw.rect(self.display_screen, (255, 0, 100), [self.food.x, self.food.y, self.speed, self.speed])
         pygame.display.update()
-        sg.clock.tick(5)
+        self.clock.tick(5)
 
 
 sg = SnakeGame(True)
+
 
 while not sg.isDead:
     sg.run()
