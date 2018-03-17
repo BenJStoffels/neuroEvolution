@@ -12,7 +12,7 @@ class SnakeGame:
         self.length = 0
         self.history = []
         self.lastMove = None
-        # self.brain = NN([24, 20, 5, 4])
+        self.brain = NN([24, 20, 5, 4])
         self.isDead = False
         self.speed = 20
         self.rows = 50
@@ -94,7 +94,8 @@ class SnakeGame:
 
     def update(self):
         self.updateHistory()
-        choice = self.getKeyInput()
+        vision = calculateVision()
+        choice = self.guess()
         if choice != None:
             self.move(choice)
         else:

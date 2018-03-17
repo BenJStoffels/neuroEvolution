@@ -1,5 +1,6 @@
 import random
 
+
 class Matrix:
     def __init__(self, rows, cols):
         self.rows = rows
@@ -22,7 +23,7 @@ class Matrix:
         return string
 
     def __pow__(self, val):
-        result = Matrix(self.rows,self.cols)
+        result = Matrix(self.rows, self.cols)
         for i in range(val):
             result *= self
         return result
@@ -65,22 +66,31 @@ class Matrix:
 
     def __radd__(self, num):
         return self + num
+
     def __sub__(self, num):
         return self + (-num)
+
     def __neg__(self):
         return -1 * self
 
     def toArray(self):
-        arr = [];
+        arr = []
         for i, col in enumerate(self.matrix):
             for number in col:
                 arr.append(number)
-        return arr;
+        return arr
 
     def map(self, func):
         for i, col in enumerate(self.matrix):
             for j, number in enumerate(col):
                 self.matrix[i][j] = func(number)
+
+    def copy(self):
+        result = Matrix(self.rows, self.cols)
+        for i, col in enumerate(self.matrix):
+            for j, number in enumerate(col):
+                result.matrix[i][j] = number
+        return result
 
     @classmethod
     def multiply(cls, ma, mb):
